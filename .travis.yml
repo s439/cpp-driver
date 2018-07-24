@@ -39,7 +39,7 @@ before_script:
   - (
       mkdir build;
       cd build;
-      CFLAGS="${EXTRA_C_FLAGS}" CXXFLAGS="${EXTRA_CXX_FLAGS}" cmake -DCMAKE_BUILD_TYPE=Release -DLIBUV_ROOT_DIR=${HOME}/dependencies/libuv-${LIBUV_VERSION}/ -DCASS_BUILD_STATIC=On -DCASS_BUILD_EXAMPLES=On -DCASS_BUILD_UNIT_TESTS=On ..
+      CFLAGS="${EXTRA_C_FLAGS}" CXXFLAGS="${EXTRA_CXX_FLAGS}" cmake -DCMAKE_BUILD_TYPE=Debug -DLIBUV_ROOT_DIR=${HOME}/dependencies/libuv-${LIBUV_VERSION}/ -DCASS_BUILD_STATIC=On -DCASS_BUILD_EXAMPLES=On -DCASS_BUILD_UNIT_TESTS=On ..
     )
 script:
   - make -C build -j${PROCS}
