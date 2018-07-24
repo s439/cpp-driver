@@ -14,8 +14,6 @@ cache:
     - ${HOME}/dependencies
 env:
   global:
-    - BOOST_VERSION=1.66.0
-    - BOOST_FILE_VERSION=1_66_0
     - PROCS=2
   matrix:
     - LIBUV_VERSION=1.20.0
@@ -31,16 +29,6 @@ install:
       )
     else echo "Using Cached libuv v${LIBUV_VERSION}. Dependency does not need to be re-compiled";
     fi
-  - if [ ! -d "${HOME}/dependencies/boost_${BOOST_FILE_VERSION}" ]; then
-      wget -q --no-check-certificate http://sourceforge.net/projects/boost/files/boost/${BOOST_VERSION}/boost_${BOOST_FILE_VERSION}.tar.gz/download -O boost_${BOOST_FILE_VERSION}.tar.gz;
-      tar xzf boost_${BOOST_FILE_VERSION}.tar.gz;
-      (
-        cd boost_${BOOST_FILE_VERSION};
-        ./bootstrap.sh --with-libraries=chrono,system,thread,test --prefix=${HOME}/dependencies/boost_${BOOST_FILE_VERSION};
-        ./b2 -j${PROCS} install;
-      )
-    else echo "Using Cached Boost v${BOOST_VERSION}. Dependency does not need to be re-compiled";
-    fi
 before_script:
   - EXTRA_CXX_FLAGS=
   - EXTRA_C_FLAGS=
@@ -51,7 +39,7 @@ before_script:
   - (
       mkdir build;
       cd build;
-      CFLAGS="${EXTRA_C_FLAGS}" CXXFLAGS="${EXTRA_CXX_FLAGS}" cmake -DCMAKE_BUILD_TYPE=Release -DBOOST_ROOT_DIR=${HOME}/dependencies/boost_${BOOST_FILE_VERSION} -DLIBUV_ROOT_DIR=${HOME}/dependencies/libuv-${LIBUV_VERSION}/ -DCASS_BUILD_STATIC=On -DCASS_BUILD_EXAMPLES=On -DCASS_BUILD_TESTS=On ..
+      CFLAGS="${EXTRA_C_FLAGS}" CXXFLAGS="${EXTRA_CXX_FLAGS}" cmake -DCMAKE_BUILD_TYPE=Release -DLIBUV_ROOT_DIR=${HOME}/dependencies/libuv-${LIBUV_VERSION}/ -DCASS_BUILD_STATIC=On -DCASS_BUILD_EXAMPLES=On -DCASS_BUILD_UNIT_TESTS=On ..
     )
 script:
   - make -C build -j${PROCS}
