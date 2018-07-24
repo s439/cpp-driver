@@ -43,7 +43,7 @@ before_script:
     )
 script:
   - make -C build -j${PROCS}
-  - build/cassandra-unit-tests
+  - build/cassandra-unit-tests --gtest_filter="*SessionBase*"
   - if [ -f build/libcassandra_static.a ]; then
       declare -a FUNCTIONS MISSING_FUNCTIONS;
       FUNCTIONS=($(grep -Eoh '^cass_\s*(\w+)\s*\(' include/cassandra.h | awk -F '(' '{print $1}'));
