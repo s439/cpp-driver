@@ -21,7 +21,7 @@
 #include "mockssandra_test.hpp"
 #include "session_base.hpp"
 
-#define WAIT_FOR_TIME 5 * 1000 * 1000 // 5 seconds
+#define WAIT_FOR_TIME 10 * 1000 * 1000 // 5 seconds
 #define KEYSPACE "datastax"
 
 class TestSessionBase : public cass::SessionBase {
