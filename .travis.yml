@@ -18,6 +18,7 @@ env:
   matrix:
     - LIBUV_VERSION=1.20.0
 install:
+  - sudo apt-get install -y gdb
   - if [ ! -d "${HOME}/dependencies/libuv-${LIBUV_VERSION}" ]; then
       wget -q --no-check-certificate http://dist.libuv.org/dist/v${LIBUV_VERSION}/libuv-v${LIBUV_VERSION}.tar.gz;
       tar xzf libuv-v${LIBUV_VERSION}.tar.gz;
@@ -41,6 +42,7 @@ before_script:
       cd build;
       CFLAGS="${EXTRA_C_FLAGS}" CXXFLAGS="${EXTRA_CXX_FLAGS}" cmake -DCMAKE_BUILD_TYPE=Debug -DLIBUV_ROOT_DIR=${HOME}/dependencies/libuv-${LIBUV_VERSION}/ -DCASS_BUILD_STATIC=On -DCASS_BUILD_EXAMPLES=On -DCASS_BUILD_UNIT_TESTS=On ..
     )
+  - ulimit -c unlimited -S
 script:
   - make -C build -j${PROCS}
   - build/cassandra-unit-tests --gtest_filter="*SessionBase*"
@@ -61,3 +63,6 @@ script:
         exit 1;
       fi;
     fi
+after_failure:
+  - COREFILE=$(find . -maxdepth 1 -name "core*" | head -n 1) # find core file
+  - if [[ -f "$COREFILE" ]]; then gdb -c "$COREFILE" cassandra-unit-tests -ex "thread apply all bt" -ex "set pagination 0" -batch; fi
